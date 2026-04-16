@@ -1,0 +1,80 @@
+Class: Vehicle
+  SubClassOf:
+      hasManufacturer some Manufacturer,
+      hasYear some xsd:integer,
+      hasModel some xsd:string
+  Individuals:
+      Vehicle1,
+      Vehicle2
+
+Class: Car
+  SubClassOf:
+      Vehicle,
+      hasEngine some Engine,
+      hasDoors some xsd:integer
+  EquivalentTo:
+      Vehicle
+      and (hasWheels exactly 4)
+  Individuals:
+      Car1,
+      Car2,
+      Car3
+
+Class: Motorcycle
+  SubClassOf:
+      Vehicle,
+      hasEngine some Engine
+  EquivalentTo:
+      Vehicle
+      and (hasWheels exactly 2)
+  DisjointClasses:
+      Car, Motorcycle, Truck
+  Individuals:
+      Motorcycle1
+
+Class: Truck
+  SubClassOf:
+      Vehicle,
+      hasPayload some xsd:float
+  DisjointClasses:
+      Car, Motorcycle, Truck
+  Individuals:
+      Truck1,
+      Truck2
+
+Class: ElectricVehicle
+  EquivalentTo:
+      Vehicle
+      and (hasFuelType value Electric1)
+      and (hasBatteryCapacity some xsd:integer [>= 40])
+
+Class: LuxuryCar
+  EquivalentTo:
+      Car
+      and (hasPrice some xsd:integer [>= 50000])
+      and (hasFeatures min 5 Feature)
+
+Class: EconomyCar
+  EquivalentTo:
+      Car
+      and (hasPrice some xsd:integer [< 20000])
+      and (hasFuelConsumption some xsd:float [<= 8])
+
+Class: Manufacturer
+  Individuals:
+      Manufacturer1,
+      Manufacturer2,
+      Manufacturer3
+
+Class: Engine
+  SubClassOf:
+      hasHorsepower some xsd:integer,
+      hasCylinders some xsd:integer
+
+Class: Feature
+  DisjointClasses:
+      Vehicle, Feature, Engine
+
+Class: FuelType
+  EquivalentTo:
+      {Electric1 , Gasoline1 , Diesel1 , Hybrid1}

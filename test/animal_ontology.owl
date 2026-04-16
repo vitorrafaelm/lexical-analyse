@@ -1,0 +1,73 @@
+Class: Animal
+  SubClassOf:
+      hasHabitat some Habitat
+  Individuals:
+      Animal1,
+      Animal2
+
+Class: Dog
+  SubClassOf:
+      Animal,
+      hasOwner some Person,
+      hasName some xsd:string
+  EquivalentTo:
+      Animal
+      and (hasFur value true)
+  Individuals:
+      Dog1,
+      Dog2,
+      Dog3
+
+Class: Cat
+  SubClassOf:
+      Animal,
+      hasOwner some Person
+  Individuals:
+      Cat1,
+      Cat2
+
+Class: WildAnimal
+  EquivalentTo:
+      Animal
+      and (not DomesticAnimal)
+
+Class: DomesticAnimal
+  EquivalentTo:
+      Animal
+      and (hasOwner min 1 Person)
+
+Class: BigDog
+  EquivalentTo:
+      Dog
+      and (hasWeight some xsd:integer [>= 30])
+
+Class: SmallDog
+  EquivalentTo:
+      Dog
+      and (hasWeight some xsd:integer [< 10])
+
+Class: Habitat
+  DisjointClasses:
+      Animal, Habitat
+
+Class: Forest
+  SubClassOf:
+      Habitat
+
+Class: Ocean
+  SubClassOf:
+      Habitat
+
+Class: DangerousAnimal
+  EquivalentTo:
+      Animal
+      and (hasDangerLevel some xsd:integer [>= 8])
+      and (hasHabitat some WildHabitat)
+
+Class: PetStore
+  SubClassOf:
+      hasPets min 5 DomesticAnimal,
+      hasLocation some xsd:string
+  Individuals:
+      PetStore1,
+      PetStore2

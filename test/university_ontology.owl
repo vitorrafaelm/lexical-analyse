@@ -1,0 +1,87 @@
+Class: University
+  SubClassOf:
+      hasName some xsd:string,
+      hasLocation some xsd:string,
+      hasDepartment min 1 Department
+  Individuals:
+      University1,
+      University2
+
+Class: Department
+  SubClassOf:
+      hasProfessor min 1 Professor,
+      hasCourse min 3 Course
+  Individuals:
+      Department1,
+      Department2,
+      Department3
+
+Class: Professor
+  SubClassOf:
+      Person,
+      hasSpecialization some xsd:string,
+      teachsCourse some Course
+  Individuals:
+      Professor1,
+      Professor2,
+      Professor3,
+      Professor4
+
+Class: Student
+  SubClassOf:
+      Person,
+      isEnrolledIn some Course,
+      hasGPA some xsd:float
+  EquivalentTo:
+      Person
+      and (isEnrolledIn min 1 Course)
+  Individuals:
+      Student1,
+      Student2,
+      Student3,
+      Student4,
+      Student5
+
+Class: GraduateStudent
+  SubClassOf:
+      Student,
+      hasAdvisor some Professor,
+      hasThesis some xsd:string
+  EquivalentTo:
+      Student
+      and (hasAdvisor min 1 Professor)
+      and (isEnrolledIn some GraduateProgram)
+
+Class: Course
+  SubClassOf:
+      hasCredits some xsd:integer,
+      isTaughtBy some Professor,
+      hasPrerequisite some Course
+  Individuals:
+      Course1,
+      Course2,
+      Course3
+
+Class: GraduateProgram
+  SubClassOf:
+      Course
+
+Class: HonorsStudent
+  EquivalentTo:
+      Student
+      and (hasGPA some xsd:float [>= 9])
+
+Class: Person
+  DisjointClasses:
+      Person, Course, Department
+
+Class: Scholarship
+  SubClassOf:
+      isAwardedTo some Student,
+      hasValue some xsd:float
+  EquivalentTo:
+      (isAwardedTo some HonorsStudent)
+      or (isAwardedTo some GraduateStudent)
+  Individuals:
+      Scholarship1,
+      Scholarship2
