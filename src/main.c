@@ -1,11 +1,11 @@
 /* ==========================================================================
- * main.c - Ponto de entrada do Analisador Léxico OWL2 Manchester Syntax
+ * main.c - Ponto de entrada do Analisador Sintático OWL2 Manchester Syntax
  *
  * Responsabilidades:
  *   - Tratar argumentos de linha de comando
  *   - Abrir o arquivo de entrada (ou usar stdin)
  *   - Inicializar a tabela de símbolos
- *   - Chamar o analisador léxico (yylex)
+ *   - Chamar o analisador sintático (yyparse)
  *   - Exibir a tabela de símbolos ao final
  * ========================================================================== */
 
@@ -14,9 +14,10 @@
 #include "token.h"
 #include "symbol_table.h"
 
-/* Declarações externas do Flex */
+/* Declarações externas do Flex e Bison */
 extern FILE *yyin;
-extern int yylex(void);
+extern int yyparse(void);
+extern int line_num;
 
 int main(int argc, char **argv)
 {
@@ -24,7 +25,7 @@ int main(int argc, char **argv)
   symtable_init();
 
   printf("============================================================\n");
-  printf("  Analisador Lexico - OWL2 Manchester Syntax\n");
+  printf("  Analisador Sintatico - OWL2 Manchester Syntax\n");
   printf("  Disciplina: Compiladores - UFERSA\n");
   printf("============================================================\n\n");
 
@@ -45,10 +46,7 @@ int main(int argc, char **argv)
     printf("  (Digite o codigo OWL e pressione Ctrl+D para finalizar)\n\n");
   }
 
-  printf("  %-5s  %-22s  %s\n", "LINHA", "TOKEN", "LEXEMA");
-  printf("  -----  ----------------------  ----------------------------\n");
-
-  yylex();
+  int result = yyparse();
 
   if (yyin && yyin != stdin)
   {
@@ -57,5 +55,5 @@ int main(int argc, char **argv)
 
   symtable_print();
 
-  return EXIT_SUCCESS;
+  return result == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }

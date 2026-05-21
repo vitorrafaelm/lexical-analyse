@@ -14,7 +14,7 @@ void symtable_init(void)
   count = 0;
 }
 
-int symtable_insert(TokenType type, const char *lexeme, int line)
+int symtable_insert(int type, const char *lexeme, int line)
 {
   if (count >= MAX_SYMBOLS)
   {
