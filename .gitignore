@@ -1,0 +1,10 @@
+# Executáveis
+owl_parser
+owl_lexer
+
+# Arquivos gerados pelo Bison
+src/owl_parser.tab.c
+src/owl_parser.tab.h
+
+# Arquivos gerados pelo Flex
+src/lex.yy.c

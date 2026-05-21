@@ -1,6 +1,5 @@
 # ==========================================================================
 # Makefile - Analisador Sintático OWL2 Manchester Syntax
-# Disciplina: Compiladores - UFERSA
 #
 # Pipeline: Bison → Flex → GCC
 #   bison -d src/owl_parser.y  → src/owl_parser.tab.c + src/owl_parser.tab.h
