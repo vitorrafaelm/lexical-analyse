@@ -1,0 +1,9 @@
+Class: SpicyPizza
+  EquivalentTo:
+      Pizza
+      and (hasTopping some (hasSpiciness value Hot))
+
+Class: ComplexPizza
+  SubClassOf:
+      Pizza,
+      hasTopping some (hasIngredient some (isOrganic value true))

@@ -16,7 +16,7 @@
 void symtable_init(void);
 
 /* Insere um token na tabela. Retorna 0 se ok, -1 se cheia. */
-int symtable_insert(TokenType type, const char *lexeme, int line);
+int symtable_insert(int type, const char *lexeme, int line);
 
 /* Retorna a quantidade de tokens armazenados */
 int symtable_size(void);

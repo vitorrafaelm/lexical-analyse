@@ -1,0 +1,11 @@
+Class: ErroFaltaNome
+  SubClassOf:
+
+Class: ErroTokenInvalido
+  SubClassOf:
+      some Pizza
+
+Class: ErroParentese
+  EquivalentTo:
+      Pizza
+      and (hasTopping some CheeseTopping

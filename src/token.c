@@ -1,55 +1,82 @@
-/* ==========================================================================
- * token.c - Implementação das funções de token
- * ========================================================================== */
 
 #include "token.h"
+#include "owl_parser.tab.h"
 
-/* Tabela de nomes legíveis para cada tipo de token */
-static const char *TOKEN_NAMES[] = {
-    [TOK_CLASS] = "CLASS",
-    [TOK_EQUIVALENT_TO] = "EQUIVALENT_TO",
-    [TOK_INDIVIDUALS] = "INDIVIDUALS",
-    [TOK_SUBCLASS_OF] = "SUBCLASS_OF",
-    [TOK_DISJOINT_CLASSES] = "DISJOINT_CLASSES",
-
-    [TOK_SOME] = "SOME",
-    [TOK_ALL] = "ALL",
-    [TOK_ONLY] = "ONLY",
-    [TOK_VALUE] = "VALUE",
-    [TOK_MIN] = "MIN",
-    [TOK_MAX] = "MAX",
-    [TOK_EXACTLY] = "EXACTLY",
-    [TOK_THAT] = "THAT",
-    [TOK_NOT] = "NOT",
-    [TOK_AND] = "AND",
-    [TOK_OR] = "OR",
-
-    [TOK_CLASS_ID] = "CLASS_ID",
-    [TOK_PROPERTY_ID] = "PROPERTY_ID",
-    [TOK_INDIVIDUAL_ID] = "INDIVIDUAL_ID",
-
-    [TOK_NAMESPACE_ID] = "NAMESPACE_ID",
-    [TOK_DATA_TYPE] = "DATA_TYPE",
-
-    [TOK_INTEGER] = "INTEGER",
-
-    [TOK_LBRACKET] = "LBRACKET",
-    [TOK_RBRACKET] = "RBRACKET",
-    [TOK_LBRACE] = "LBRACE",
-    [TOK_RBRACE] = "RBRACE",
-    [TOK_LPAREN] = "LPAREN",
-    [TOK_RPAREN] = "RPAREN",
-    [TOK_GTE] = "GTE",
-    [TOK_LTE] = "LTE",
-    [TOK_GT] = "GT",
-    [TOK_LT] = "LT",
-    [TOK_QUOTE] = "QUOTE",
-    [TOK_COMMA] = "COMMA",
-
-    [TOK_ERROR] = "ERRO_LEXICO",
-};
-
-const char *token_type_name(TokenType type)
+const char *token_type_name(int type)
 {
-  return TOKEN_NAMES[type];
+  switch (type)
+  {
+  case TOK_CLASS:
+    return "CLASS";
+  case TOK_EQUIVALENT_TO:
+    return "EQUIVALENT_TO";
+  case TOK_INDIVIDUALS:
+    return "INDIVIDUALS";
+  case TOK_SUBCLASS_OF:
+    return "SUBCLASS_OF";
+  case TOK_DISJOINT_CLASSES:
+    return "DISJOINT_CLASSES";
+  case TOK_SOME:
+    return "SOME";
+  case TOK_ALL:
+    return "ALL";
+  case TOK_ONLY:
+    return "ONLY";
+  case TOK_VALUE:
+    return "VALUE";
+  case TOK_MIN:
+    return "MIN";
+  case TOK_MAX:
+    return "MAX";
+  case TOK_EXACTLY:
+    return "EXACTLY";
+  case TOK_THAT:
+    return "THAT";
+  case TOK_NOT:
+    return "NOT";
+  case TOK_AND:
+    return "AND";
+  case TOK_OR:
+    return "OR";
+  case TOK_CLASS_ID:
+    return "CLASS_ID";
+  case TOK_PROPERTY_ID:
+    return "PROPERTY_ID";
+  case TOK_INDIVIDUAL_ID:
+    return "INDIVIDUAL_ID";
+  case TOK_NAMESPACE_ID:
+    return "NAMESPACE_ID";
+  case TOK_DATA_TYPE:
+    return "DATA_TYPE";
+  case TOK_INTEGER:
+    return "INTEGER";
+  case TOK_LBRACKET:
+    return "LBRACKET";
+  case TOK_RBRACKET:
+    return "RBRACKET";
+  case TOK_LBRACE:
+    return "LBRACE";
+  case TOK_RBRACE:
+    return "RBRACE";
+  case TOK_LPAREN:
+    return "LPAREN";
+  case TOK_RPAREN:
+    return "RPAREN";
+  case TOK_GTE:
+    return "GTE";
+  case TOK_LTE:
+    return "LTE";
+  case TOK_GT:
+    return "GT";
+  case TOK_LT:
+    return "LT";
+  case TOK_QUOTE:
+    return "QUOTE";
+  case TOK_COMMA:
+    return "COMMA";
+  case TOK_ERROR:
+    return "ERRO_LEXICO";
+  default:
+    return "DESCONHECIDO";
+  }
 }
