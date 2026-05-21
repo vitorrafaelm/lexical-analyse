@@ -1,0 +1,17 @@
+Class: CheesyPizza
+  EquivalentTo:
+      Pizza
+      and (hasTopping some CheeseTopping)
+
+Class: DomesticAnimal
+  EquivalentTo:
+      Animal
+      and (hasOwner min 1 Person)
+
+Class: Car
+  SubClassOf:
+      Vehicle,
+      hasEngine some Engine
+  EquivalentTo:
+      Vehicle
+      and (hasWheels exactly 4)

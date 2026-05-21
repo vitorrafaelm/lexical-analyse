@@ -1,0 +1,7 @@
+Class: Spiciness
+  EquivalentTo:
+      {Hot1, Medium1, Mild1}
+
+Class: FuelType
+  EquivalentTo:
+      {Electric1, Gasoline1, Diesel1, Hybrid1}

@@ -1,0 +1,7 @@
+Class: Spiciness
+  EquivalentTo:
+      Hot or Medium or Mild
+
+Class: VehicleCategory
+  EquivalentTo:
+      Economy or Standard or Luxury or Premium

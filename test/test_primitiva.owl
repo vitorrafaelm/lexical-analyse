@@ -1,0 +1,16 @@
+Class: Pizza
+  SubClassOf:
+      hasBase some PizzaBase,
+      hasCaloricContent some xsd:integer
+
+Class: NamedPizza
+  SubClassOf:
+      Pizza
+
+Class: PizzaBase
+  SubClassOf:
+      hasThickness some xsd:string
+
+Class: Forest
+  SubClassOf:
+      Habitat

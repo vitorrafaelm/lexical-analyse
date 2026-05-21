@@ -1,0 +1,13 @@
+Class: MargheritaPizza
+  SubClassOf:
+      NamedPizza,
+      hasTopping some MozzarellaTopping,
+      hasTopping some TomatoTopping,
+      hasTopping only
+      (MozzarellaTopping or TomatoTopping)
+
+Class: VegetarianPizza
+  EquivalentTo:
+      Pizza
+      and (hasTopping only
+      (CheeseTopping or VegetableTopping or MushroomTopping))
