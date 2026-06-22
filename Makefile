@@ -22,7 +22,7 @@ BISON_OUTPUT = $(SRC_DIR)/owl_parser.tab.c
 BISON_HEADER = $(SRC_DIR)/owl_parser.tab.h
 LEX_SRC      = $(SRC_DIR)/owl_lexer.l
 LEX_OUTPUT   = $(SRC_DIR)/lex.yy.c
-SOURCES      = $(SRC_DIR)/main.c $(SRC_DIR)/token.c $(SRC_DIR)/symbol_table.c $(BISON_OUTPUT) $(LEX_OUTPUT)
+SOURCES      = $(SRC_DIR)/main.c $(SRC_DIR)/token.c $(SRC_DIR)/symbol_table.c $(SRC_DIR)/semantic_analyzer.c $(BISON_OUTPUT) $(LEX_OUTPUT)
 TARGET       = owl_parser
 TEST_FILE    = $(TEST_DIR)/pizza_ontology.owl
 

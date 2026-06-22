@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "token.h"
+#include "semantic_analyzer.h"
 
 /* Variáveis externas do Flex */
 extern int yylex(void);
@@ -197,10 +198,12 @@ class_decl
           reset_class_flags();
           strncpy(current_class, $2, 255);
           current_class[255] = '\0';
+          semantic_start_class($2, line_num);
       }
       class_body
       {
           print_classification();
+          semantic_end_class();
       }
     ;
 
@@ -213,16 +216,38 @@ section
     : TOK_SUBCLASS_OF
       {
           has_subclassof = 1;
+          semantic_enter_section("SubClassOf", line_num);
       }
       desc_comma_list
+      {
+          semantic_exit_section();
+      }
     | TOK_EQUIVALENT_TO
       {
           has_equivalentto = 1;
           equiv_has_property = 0;
+          semantic_enter_section("EquivalentTo", line_num);
       }
       equiv_body
-    | TOK_DISJOINT_CLASSES classid_comma_list
-    | TOK_INDIVIDUALS indref_comma_list
+      {
+          semantic_exit_section();
+      }
+    | TOK_DISJOINT_CLASSES
+      {
+          semantic_enter_section("DisjointClasses", line_num);
+      }
+      classid_comma_list
+      {
+          semantic_exit_section();
+      }
+    | TOK_INDIVIDUALS
+      {
+          semantic_enter_section("Individuals", line_num);
+      }
+      indref_comma_list
+      {
+          semantic_exit_section();
+      }
     ;
 
 /* ===================================================================== */
@@ -277,11 +302,19 @@ enumeration
     ;
 
 ind_comma_list
-    : TOK_INDIVIDUAL_ID ind_comma_tail
+    : TOK_INDIVIDUAL_ID
+      {
+          semantic_note_individual_ref($1, line_num);
+      }
+      ind_comma_tail
     ;
 
 ind_comma_tail
-    : TOK_COMMA TOK_INDIVIDUAL_ID ind_comma_tail
+    : TOK_COMMA TOK_INDIVIDUAL_ID
+      {
+          semantic_note_individual_ref($2, line_num);
+      }
+      ind_comma_tail
     | /* vazio */
     ;
 
@@ -326,8 +359,18 @@ unary
 
 primary
     : TOK_CLASS_ID
+      {
+          semantic_note_class_ref($1, line_num);
+      }
     | restriction
-    | TOK_LPAREN or_expr TOK_RPAREN
+    | TOK_LPAREN
+      {
+          semantic_enter_group("ParenthesizedExpr", line_num);
+      }
+      or_expr TOK_RPAREN
+      {
+          semantic_exit_group();
+      }
     ;
 
 /* ===================================================================== */
@@ -339,20 +382,31 @@ restriction
       {
           equiv_has_property = 1;
           restriction_depth++;
+          semantic_enter_restriction($1, line_num);
       }
       restriction_tail
       {
           restriction_depth--;
+          semantic_exit_restriction();
       }
     ;
 
 restriction_tail
-    : TOK_SOME object
-    | TOK_ALL object
+        : TOK_SOME
+            {
+                    semantic_set_operator("some", line_num);
+            }
+            object
+        | TOK_ALL
+            {
+                    semantic_set_operator("all", line_num);
+            }
+            object
     | TOK_ONLY
       {
           inside_only++;
           only_has_or = 0;
+                    semantic_set_operator("only", line_num);
       }
       only_object
       {
@@ -360,10 +414,29 @@ restriction_tail
           if (only_has_or)
               has_closure = 1;
       }
-    | TOK_VALUE value_obj
-    | TOK_MIN TOK_INTEGER card_obj
-    | TOK_MAX TOK_INTEGER card_obj
-    | TOK_EXACTLY TOK_INTEGER card_obj
+        | TOK_VALUE
+            {
+                    semantic_set_operator("value", line_num);
+            }
+            value_obj
+        | TOK_MIN TOK_INTEGER
+            {
+                    semantic_set_operator("min", line_num);
+                    semantic_note_integer_literal($2, line_num);
+            }
+            card_obj
+        | TOK_MAX TOK_INTEGER
+            {
+                    semantic_set_operator("max", line_num);
+                    semantic_note_integer_literal($2, line_num);
+            }
+            card_obj
+        | TOK_EXACTLY TOK_INTEGER
+            {
+                    semantic_set_operator("exactly", line_num);
+                    semantic_note_integer_literal($2, line_num);
+            }
+            card_obj
     ;
 
 /* ===================================================================== */
@@ -372,8 +445,18 @@ restriction_tail
 
 only_object
     : TOK_CLASS_ID
+      {
+          semantic_note_class_ref($1, line_num);
+      }
     | datatype facet_opt
-    | TOK_LPAREN only_or_expr TOK_RPAREN
+    | TOK_LPAREN
+      {
+          semantic_enter_group("OnlyExpr", line_num);
+      }
+      only_or_expr TOK_RPAREN
+      {
+          semantic_exit_group();
+      }
     ;
 
 only_or_expr
@@ -405,8 +488,18 @@ only_unary
 
 only_primary
     : TOK_CLASS_ID
+      {
+          semantic_note_class_ref($1, line_num);
+      }
     | only_restriction
-    | TOK_LPAREN only_or_expr TOK_RPAREN
+    | TOK_LPAREN
+      {
+          semantic_enter_group("OnlyNestedExpr", line_num);
+      }
+      only_or_expr TOK_RPAREN
+      {
+          semantic_exit_group();
+      }
     ;
 
 only_restriction
@@ -427,13 +520,20 @@ only_restriction
 
 object
     : TOK_CLASS_ID
+      {
+          semantic_note_class_ref($1, line_num);
+      }
     | datatype facet_opt
     | TOK_LPAREN
       {
           if (restriction_depth > 0)
               has_nesting = 1;
+          semantic_enter_group("RestrictionTarget", line_num);
       }
       or_expr TOK_RPAREN
+      {
+          semantic_exit_group();
+      }
     ;
 
 /* ===================================================================== */
@@ -441,9 +541,18 @@ object
 /* ===================================================================== */
 
 value_obj
-    : TOK_CLASS_ID
-    | TOK_INDIVIDUAL_ID
-    | TOK_PROPERTY_ID
+        : TOK_CLASS_ID
+            {
+                    semantic_note_class_ref($1, line_num);
+            }
+        | TOK_INDIVIDUAL_ID
+            {
+                    semantic_note_individual_ref($1, line_num);
+            }
+        | TOK_PROPERTY_ID
+            {
+                    semantic_note_property_ref($1, line_num);
+            }
     ;
 
 /* ===================================================================== */
@@ -452,6 +561,9 @@ value_obj
 
 card_obj
     : TOK_CLASS_ID
+      {
+          semantic_note_class_ref($1, line_num);
+      }
     | datatype facet_opt
     | /* vazio */
     ;
@@ -462,6 +574,9 @@ card_obj
 
 datatype
     : TOK_NAMESPACE_ID TOK_DATA_TYPE
+      {
+          semantic_note_datatype_ref($1, $2, line_num);
+      }
     ;
 
 facet_opt
@@ -481,11 +596,19 @@ comp
 /* ===================================================================== */
 
 classid_comma_list
-    : TOK_CLASS_ID classid_comma_tail
+    : TOK_CLASS_ID
+      {
+          semantic_note_class_ref($1, line_num);
+      }
+      classid_comma_tail
     ;
 
 classid_comma_tail
-    : TOK_COMMA TOK_CLASS_ID classid_comma_tail
+    : TOK_COMMA TOK_CLASS_ID
+      {
+          semantic_note_class_ref($2, line_num);
+      }
+      classid_comma_tail
     | /* vazio */
     ;
 
@@ -494,11 +617,19 @@ classid_comma_tail
 /* ===================================================================== */
 
 indref_comma_list
-    : TOK_INDIVIDUAL_ID indref_comma_tail
+    : TOK_INDIVIDUAL_ID
+      {
+          semantic_note_individual_ref($1, line_num);
+      }
+      indref_comma_tail
     ;
 
 indref_comma_tail
-    : TOK_COMMA TOK_INDIVIDUAL_ID indref_comma_tail
+    : TOK_COMMA TOK_INDIVIDUAL_ID
+      {
+          semantic_note_individual_ref($2, line_num);
+      }
+      indref_comma_tail
     | /* vazio */
     ;
 

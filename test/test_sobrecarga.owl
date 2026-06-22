@@ -1,0 +1,9 @@
+Class: Engine
+
+Class: Vehicle
+
+Class: OverloadCase
+  SubClassOf:
+      hasSpec some Engine,
+      hasSpec some xsd:string,
+      hasSpec value true
