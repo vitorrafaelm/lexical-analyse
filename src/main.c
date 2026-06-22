@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include "token.h"
 #include "symbol_table.h"
+#include "semantic_analyzer.h"
 
 /* Declarações externas do Flex e Bison */
 extern FILE *yyin;
@@ -23,6 +24,7 @@ int main(int argc, char **argv)
 {
 
   symtable_init();
+  semantic_init();
 
   printf("============================================================\n");
   printf("  Analisador Sintatico - OWL2 Manchester Syntax\n");
@@ -53,7 +55,11 @@ int main(int argc, char **argv)
     fclose(yyin);
   }
 
+  semantic_finalize();
+  semantic_print_report();
   symtable_print();
+
+  semantic_destroy();
 
   return result == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
